@@ -1,4 +1,6 @@
-<head>
+<!DOCTYPE html>
+<html lang="ja">
+    <head>
   <title>今日の天体</title>
   <link rel="stylesheet" href="https://api.nasa.gov/assets/css/nasa.css">
   <!-- Google Fonts追加：Orbitron（タイトル用）とNoto Sans JP（本文用） -->
@@ -92,3 +94,242 @@
     }
   </style>
 </head>
+<head>
+  <title>今日の天体</title>
+  <link rel="stylesheet" href="https://api.nasa.gov/assets/css/nasa.css">
+  <style>
+    #tenntai {
+      width: 300px;
+    }
+    #tenntaiImage {
+      width: 100%;
+    }
+  </style>
+</head>
+<body>
+
+<main class="container">
+  <h1>天体写真日記</h1>
+  <label for="dateInput">日付を選んでください：</label>
+  <input type="date" id="dateInput">
+  <button id="showBtn">写真を表示</button>
+  <div id="tenntai">
+    <h2 id="tenntaiName"></h2>
+    <img id="tenntaiImage" src="">
+    <div id="tenntaiDesc" style="color:#fff; margin-top:1em; text-align:left;"></div>
+  </div>
+</main>
+
+<script>
+  let tenntaiName = document.getElementById('tenntaiName');
+  let tenntaiImage = document.getElementById('tenntaiImage');
+  let tenntaiDesc = document.getElementById('tenntaiDesc');
+  let showBtn = document.getElementById('showBtn');
+  let dateInput = document.getElementById('dateInput');
+
+  // 動画用のiframeを動的に作成・管理
+  let tenntaiVideo = null;
+
+  // 簡易な日本語翻訳（主要な単語のみ例示）
+  function translateTitle(title) {
+    const dict = [
+      {en: "Asteroid", ja: "小惑星"},
+      {en: "Holds the Building Blocks of Life", ja: "生命の構成要素を持つ"},
+      {en: "The Milky Way", ja: "天の川"},
+      {en: "Sun", ja: "太陽"},
+      {en: "Moon", ja: "月"},
+      {en: "Earth", ja: "地球"},
+      {en: "Jupiter", ja: "木星"},
+      {en: "Saturn", ja: "土星"},
+      {en: "Venus", ja: "金星"},
+      {en: "Mars", ja: "火星"},
+      {en: "Comet", ja: "彗星"},
+      {en: "Nebula", ja: "星雲"},
+      {en: "Galaxy", ja: "銀河"},
+      {en: "Aurora", ja: "オーロラ"},
+      {en: "Eclipse", ja: "食"},
+      {en: "Supernova", ja: "超新星"},
+      {en: "Black Hole", ja: "ブラックホール"},
+      {en: "Star", ja: "星"},
+      {en: "Space", ja: "宇宙"},
+      {en: "Life", ja: "生命"},
+      {en: "Blocks", ja: "構成要素"},
+      {en: "Building", ja: "構成"},
+      {en: "of", ja: "の"},
+      {en: "and", ja: "と"},
+      {en: "in", ja: "で"},
+      {en: "on", ja: "に"},
+      {en: "with", ja: "とともに"},
+    ];
+    let ja = title;
+    dict.forEach(pair => {
+      ja = ja.replace(new RegExp(pair.en, 'gi'), pair.ja);
+    });
+    return ja === title ? "（日本語訳なし）" : ja;
+  }
+
+  showBtn.addEventListener('click', function() {
+    let date = dateInput.value;
+    if (!date) {
+      tenntaiName.innerHTML = '日付を選んでください。';
+      tenntaiImage.src = '';
+      tenntaiImage.style.display = "none";
+      tenntaiDesc.textContent = '';
+      if (tenntaiVideo) {
+        tenntaiVideo.remove();
+        tenntaiVideo = null;
+      }
+      return;
+    }
+    fetch(`https://api.nasa.gov/planetary/apod?api_key=vKvFKoXUb9gldZOgrOahN4zP3YfFSHC8xW9xYKqy&date=${date}`)
+      .then(function (response) {
+        return response.json();
+      })
+      .then(function(data) {
+        // 英語タイトル
+        let enTitle = data.title || 'タイトルなし';
+        // 日本語訳（簡易）
+        let jaTitle = translateTitle(enTitle);
+        tenntaiName.innerHTML = `${enTitle}<br><span style="font-size:0.9em;color:#bbb;">（${jaTitle}）</span>`;
+        // 説明文
+        tenntaiDesc.textContent = data.explanation || '';
+        // 画像の場合
+        if (data.media_type === "image") {
+          tenntaiImage.src = data.hdurl || data.url || '';
+          tenntaiImage.style.display = "block";
+          if (tenntaiVideo) {
+            tenntaiVideo.remove();
+            tenntaiVideo = null;
+          }
+        // 動画の場合
+        } else if (data.media_type === "video") {
+          tenntaiImage.style.display = "none";
+          if (tenntaiVideo) {
+            tenntaiVideo.remove();
+            tenntaiVideo = null;
+          }
+          tenntaiVideo = document.createElement('iframe');
+          tenntaiVideo.src = data.url;
+          tenntaiVideo.width = "100%";
+          tenntaiVideo.height = "300";
+          tenntaiVideo.frameBorder = "0";
+          tenntaiVideo.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture";
+          tenntaiVideo.allowFullscreen = true;
+          document.getElementById('tenntai').appendChild(tenntaiVideo);
+        } else {
+          tenntaiName.innerHTML = '指定した日付の写真・動画が取得できませんでした';
+          tenntaiImage.src = '';
+          tenntaiImage.style.display = "none";
+          tenntaiDesc.textContent = '';
+          if (tenntaiVideo) {
+            tenntaiVideo.remove();
+            tenntaiVideo = null;
+          }
+        }
+      })
+      .catch(function(error) {
+        tenntaiName.innerHTML = '写真・動画を取得できませんでした';
+        tenntaiImage.src = '';
+        tenntaiImage.style.display = "none";
+        tenntaiDesc.textContent = '';
+        if (tenntaiVideo) {
+          tenntaiVideo.remove();
+          tenntaiVideo = null;
+        }
+      });
+  });
+</script>
+
+<head>
+  <title>今日の天体</title>
+  <link rel="stylesheet" href="https://api.nasa.gov/assets/css/nasa.css">
+  <style>
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      margin: 0;
+    }
+    main.container {
+      text-align: center;
+    }
+    #tenntai {
+      width: 300px;
+      margin: 0 auto;
+    }
+    #tenntaiImage {
+      width: 100%;
+    }
+  </style>
+</head>
+<head>
+  <title>今日の天体</title>
+  <link rel="stylesheet" href="https://api.nasa.gov/assets/css/nasa.css">
+  <style>
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      margin: 0;
+      /* 夜空風の背景 */
+      background: linear-gradient(to bottom, #0a1446 0%, #1a237e 100%);
+      position: relative;
+      overflow: hidden;
+    }
+    /* 星をランダムに配置（疑似要素で簡易的に） */
+    body::before {
+      content: "";
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      pointer-events: none;
+      background:
+        radial-gradient(white 1px, transparent 1px) 20px 30px/120px 120px,
+        radial-gradient(white 1.5px, transparent 1.5px) 80px 100px/200px 200px,
+        radial-gradient(white 0.8px, transparent 0.8px) 150px 200px/180px 180px;
+      background-repeat: repeat;
+      opacity: 0.7;
+      z-index: 0;
+    }
+    main.container {
+      text-align: center;
+      position: relative;
+      z-index: 1;
+    }
+    #tenntai {
+      width: 300px;
+      margin: 0 auto;
+      background: rgba(20, 24, 48, 0.8);
+      border-radius: 16px;
+      padding: 16px;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.4);
+    }
+    #tenntaiImage {
+      width: 100%;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+    }
+    label, h1, h2, button, #tenntaiName, #tenntaiDesc {
+      color: #fff;
+      text-shadow: 0 1px 4px #000;
+    }
+    input[type="date"], button {
+      margin: 8px 0;
+      border-radius: 6px;
+      border: none;
+      padding: 6px 12px;
+    }
+    button {
+      background: #3949ab;
+      color: #fff;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    button:hover {
+      background: #283593;
+    }
+  </style>
+</head>
+</body>
+</html>

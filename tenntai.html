@@ -7,18 +7,16 @@
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&family=Orbitron:wght@700&display=swap" rel="stylesheet">
   <style>
     body {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      min-height: 100vh;
+      /* flexレイアウトを削除 */
       margin: 0;
       /* 夜空風の背景 */
       background: linear-gradient(to bottom, #0a1446 0%, #1a237e 100%);
       position: relative;
-      overflow: hidden;
+      overflow-x: hidden;
       font-family: 'Noto Sans JP', 'Orbitron', 'Yu Gothic', 'Meiryo', sans-serif;
+      min-height: 100vh;
     }
-    /* 星をランダムに配置（疑似要素で簡易的に） */
+    /* 星の背景はそのまま */
     body::before {
       content: "";
       position: absolute;
@@ -36,26 +34,25 @@
       text-align: center;
       position: relative;
       z-index: 1;
-      font-family: 'Noto Sans JP', 'Orbitron', 'Yu Gothic', 'Meiryo', sans-serif;
+      margin: 40px auto 40px auto;
+      max-width: 400px;
     }
     #tenntai {
-      width: 300px;
+      width: 100%;
       margin: 0 auto;
       background: rgba(20, 24, 48, 0.8);
       border-radius: 16px;
       padding: 16px;
       box-shadow: 0 4px 24px rgba(0,0,0,0.4);
-      font-family: 'Noto Sans JP', 'Orbitron', 'Yu Gothic', 'Meiryo', sans-serif;
     }
     #tenntaiImage {
       width: 100%;
       border-radius: 8px;
       box-shadow: 0 2px 8px rgba(0,0,0,0.3);
     }
-    label, h2, button, #tenntaiName, #tenntaiDesc {
+    label, h1, h2, button, #tenntaiName, #tenntaiDesc {
       color: #fff;
       text-shadow: 0 1px 4px #000;
-      font-family: 'Noto Sans JP', 'Orbitron', 'Yu Gothic', 'Meiryo', sans-serif;
     }
     /* タイトルをおしゃれに */
     h1 {
@@ -94,18 +91,6 @@
     }
   </style>
 </head>
-<head>
-  <title>今日の天体</title>
-  <link rel="stylesheet" href="https://api.nasa.gov/assets/css/nasa.css">
-  <style>
-    #tenntai {
-      width: 300px;
-    }
-    #tenntaiImage {
-      width: 100%;
-    }
-  </style>
-</head>
 <body>
 
 <main class="container">
@@ -116,12 +101,14 @@
   <div id="tenntai">
     <h2 id="tenntaiName"></h2>
     <img id="tenntaiImage" src="">
+    <div id="tenntaiDesc" style="color:#fff; margin-top:1em; text-align:left;"></div>
   </div>
 </main>
 
 <script>
   let tenntaiName = document.getElementById('tenntaiName');
   let tenntaiImage = document.getElementById('tenntaiImage');
+  let tenntaiDesc = document.getElementById('tenntaiDesc');
   let showBtn = document.getElementById('showBtn');
   let dateInput = document.getElementById('dateInput');
 
@@ -130,7 +117,6 @@
 
   // 簡易な日本語翻訳（主要な単語のみ例示）
   function translateTitle(title) {
-    // ここに必要に応じて単語やフレーズを追加してください
     const dict = [
       {en: "Asteroid", ja: "小惑星"},
       {en: "Holds the Building Blocks of Life", ja: "生命の構成要素を持つ"},
@@ -173,6 +159,7 @@
       tenntaiName.innerHTML = '日付を選んでください。';
       tenntaiImage.src = '';
       tenntaiImage.style.display = "none";
+      tenntaiDesc.textContent = '';
       if (tenntaiVideo) {
         tenntaiVideo.remove();
         tenntaiVideo = null;
@@ -188,7 +175,9 @@
         let enTitle = data.title || 'タイトルなし';
         // 日本語訳（簡易）
         let jaTitle = translateTitle(enTitle);
-        tenntaiName.innerHTML = `${enTitle}<br><span style="font-size:0.9em;color:#555;">（${jaTitle}）</span>`;
+        tenntaiName.innerHTML = `${enTitle}<br><span style="font-size:0.9em;color:#bbb;">（${jaTitle}）</span>`;
+        // 説明文
+        tenntaiDesc.textContent = data.explanation || '';
         // 画像の場合
         if (data.media_type === "image") {
           tenntaiImage.src = data.hdurl || data.url || '';
@@ -216,6 +205,7 @@
           tenntaiName.innerHTML = '指定した日付の写真・動画が取得できませんでした';
           tenntaiImage.src = '';
           tenntaiImage.style.display = "none";
+          tenntaiDesc.textContent = '';
           if (tenntaiVideo) {
             tenntaiVideo.remove();
             tenntaiVideo = null;
@@ -226,6 +216,7 @@
         tenntaiName.innerHTML = '写真・動画を取得できませんでした';
         tenntaiImage.src = '';
         tenntaiImage.style.display = "none";
+        tenntaiDesc.textContent = '';
         if (tenntaiVideo) {
           tenntaiVideo.remove();
           tenntaiVideo = null;
@@ -239,40 +230,16 @@
   <link rel="stylesheet" href="https://api.nasa.gov/assets/css/nasa.css">
   <style>
     body {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      min-height: 100vh;
-      margin: 0;
-    }
-    main.container {
-      text-align: center;
-    }
-    #tenntai {
-      width: 300px;
-      margin: 0 auto;
-    }
-    #tenntaiImage {
-      width: 100%;
-    }
-  </style>
-</head>
-<head>
-  <title>今日の天体</title>
-  <link rel="stylesheet" href="https://api.nasa.gov/assets/css/nasa.css">
-  <style>
-    body {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      min-height: 100vh;
+      /* flexレイアウトを削除 */
       margin: 0;
       /* 夜空風の背景 */
       background: linear-gradient(to bottom, #0a1446 0%, #1a237e 100%);
       position: relative;
-      overflow: hidden;
+      overflow-x: hidden;
+      font-family: 'Noto Sans JP', 'Orbitron', 'Yu Gothic', 'Meiryo', sans-serif;
+      min-height: 100vh;
     }
-    /* 星をランダムに配置（疑似要素で簡易的に） */
+    /* 星の背景はそのまま */
     body::before {
       content: "";
       position: absolute;
@@ -290,9 +257,11 @@
       text-align: center;
       position: relative;
       z-index: 1;
+      margin: 40px auto 40px auto;
+      max-width: 400px;
     }
     #tenntai {
-      width: 300px;
+      width: 100%;
       margin: 0 auto;
       background: rgba(20, 24, 48, 0.8);
       border-radius: 16px;
@@ -308,11 +277,31 @@
       color: #fff;
       text-shadow: 0 1px 4px #000;
     }
+    /* タイトルをおしゃれに */
+    h1 {
+      font-family: 'Orbitron', 'Noto Sans JP', 'Yu Gothic', 'Meiryo', sans-serif;
+      letter-spacing: 0.08em;
+      font-size: 2.2em;
+      color: #fff;
+      text-shadow: 0 2px 8px #283593, 0 1px 4px #000;
+      margin-bottom: 0.5em;
+    }
+    /* ラベルもおしゃれに */
+    label[for="dateInput"] {
+      font-family: 'Orbitron', 'Noto Sans JP', 'Yu Gothic', 'Meiryo', sans-serif;
+      font-size: 1.1em;
+      letter-spacing: 0.04em;
+      color: #fff;
+      text-shadow: 0 1px 4px #000;
+      margin-bottom: 0.5em;
+      display: inline-block;
+    }
     input[type="date"], button {
       margin: 8px 0;
       border-radius: 6px;
       border: none;
       padding: 6px 12px;
+      font-family: 'Noto Sans JP', 'Orbitron', 'Yu Gothic', 'Meiryo', sans-serif;
     }
     button {
       background: #3949ab;
