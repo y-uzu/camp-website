@@ -28,6 +28,7 @@
 
 <script>
   // 1から100までのランダムな整数を生成し、コンソールにログを出力
+  let i=0
   let answerNumber = Math.floor(Math.random() * 100) + 1;
   console.log('正解は' + answerNumber);
 
@@ -41,17 +42,29 @@
   let guessResult = document.querySelector('#guessResult');
 
   // ユーザーの入力をチェックし、結果を表示
-  function checkGuess() {
+  function checkGuess(){
+
     // ユーザの入力した値を取得
     let userGuess = Number(guessField.value);
-
+    
     if (userGuess === answerNumber) { // ユーザの入力が正解
-      guessResult.textContent = '正解です！';
+        i=i+1
+        guessResult.textContent = '正解です！';
+      
     } else if (userGuess < answerNumber) { // ユーザの入力が正解より小さい
-      guessResult.textContent = 'もっと大きいです';
+        i=i+1
+        guessResult.textContent = 'もっと大きいです。あと'+i+'回です';
+      
     } else if (userGuess > answerNumber) { // ユーザの入力が正解より大きい
-      guessResult.textContent = 'もっと小さいです';
+        i=i+1
+        guessResult.textContent = 'もっと小さいです。あと'+i+'回です';
+    } else if (i>3)
+        guessResult.textContent = 'ゲームオーバーです。正解は' + answerNumber + 'でした。';
+     {
+
     }
+
+
   }
 
   // submitがクリックされたときに、checkGuess関数を呼び出す
