@@ -1,0 +1,94 @@
+<head>
+  <title>今日の天体</title>
+  <link rel="stylesheet" href="https://api.nasa.gov/assets/css/nasa.css">
+  <!-- Google Fonts追加：Orbitron（タイトル用）とNoto Sans JP（本文用） -->
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&family=Orbitron:wght@700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      margin: 0;
+      /* 夜空風の背景 */
+      background: linear-gradient(to bottom, #0a1446 0%, #1a237e 100%);
+      position: relative;
+      overflow: hidden;
+      font-family: 'Noto Sans JP', 'Orbitron', 'Yu Gothic', 'Meiryo', sans-serif;
+    }
+    /* 星をランダムに配置（疑似要素で簡易的に） */
+    body::before {
+      content: "";
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      pointer-events: none;
+      background:
+        radial-gradient(white 1px, transparent 1px) 20px 30px/120px 120px,
+        radial-gradient(white 1.5px, transparent 1.5px) 80px 100px/200px 200px,
+        radial-gradient(white 0.8px, transparent 0.8px) 150px 200px/180px 180px;
+      background-repeat: repeat;
+      opacity: 0.7;
+      z-index: 0;
+    }
+    main.container {
+      text-align: center;
+      position: relative;
+      z-index: 1;
+      font-family: 'Noto Sans JP', 'Orbitron', 'Yu Gothic', 'Meiryo', sans-serif;
+    }
+    #tenntai {
+      width: 300px;
+      margin: 0 auto;
+      background: rgba(20, 24, 48, 0.8);
+      border-radius: 16px;
+      padding: 16px;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.4);
+      font-family: 'Noto Sans JP', 'Orbitron', 'Yu Gothic', 'Meiryo', sans-serif;
+    }
+    #tenntaiImage {
+      width: 100%;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+    }
+    label, h2, button, #tenntaiName, #tenntaiDesc {
+      color: #fff;
+      text-shadow: 0 1px 4px #000;
+      font-family: 'Noto Sans JP', 'Orbitron', 'Yu Gothic', 'Meiryo', sans-serif;
+    }
+    /* タイトルをおしゃれに */
+    h1 {
+      font-family: 'Orbitron', 'Noto Sans JP', 'Yu Gothic', 'Meiryo', sans-serif;
+      letter-spacing: 0.08em;
+      font-size: 2.2em;
+      color: #fff;
+      text-shadow: 0 2px 8px #283593, 0 1px 4px #000;
+      margin-bottom: 0.5em;
+    }
+    /* ラベルもおしゃれに */
+    label[for="dateInput"] {
+      font-family: 'Orbitron', 'Noto Sans JP', 'Yu Gothic', 'Meiryo', sans-serif;
+      font-size: 1.1em;
+      letter-spacing: 0.04em;
+      color: #fff;
+      text-shadow: 0 1px 4px #000;
+      margin-bottom: 0.5em;
+      display: inline-block;
+    }
+    input[type="date"], button {
+      margin: 8px 0;
+      border-radius: 6px;
+      border: none;
+      padding: 6px 12px;
+      font-family: 'Noto Sans JP', 'Orbitron', 'Yu Gothic', 'Meiryo', sans-serif;
+    }
+    button {
+      background: #3949ab;
+      color: #fff;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    button:hover {
+      background: #283593;
+    }
+  </style>
+</head>
